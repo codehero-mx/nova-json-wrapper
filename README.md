@@ -169,6 +169,22 @@ When the user selects a role, the wrapper swaps its child fields accordingly. On
 
 > **Tip:** The initial fields passed to `JsonWrapper::make()` are used when the resource already exists (edit/detail). The `dependsOn` callback fires on every form sync and replaces them dynamically.
 
+### 5. Showing fields on the index view
+
+By default, child fields are hidden on the index/list view. Use `indexFields()` to choose which ones to display:
+
+```php
+JsonWrapper::make('options', [
+    Text::make('First Name', 'first_name')->rules('required'),
+    Text::make('Last Name', 'last_name')->rules('required'),
+    Number::make('Age', 'age')->rules('required', 'numeric', 'min:0'),
+])->indexFields(['first_name', 'age'])
+```
+
+Only `First Name` and `Age` will appear as columns on the resource index. The fields are resolved from the JSON column automatically.
+
+> **Note:** Index fields are **read-only display columns**. Since the data lives inside a JSON column, they cannot be sorted, filtered, or searched through Nova's built-in mechanisms. They also only work with first-level child fields (not nested wrappers).
+
 ## How it works
 
 - **`JsonWrapper`** extends `Laravel\Nova\Fields\Field` with the `SupportsDependentFields` trait. It manages a collection of child fields that are resolved, filled, and validated against the JSON column.

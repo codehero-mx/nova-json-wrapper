@@ -24,6 +24,9 @@ class JsonWrapper extends Field
     /** @var Collection<int, Field> The child fields managed by this wrapper. */
     public Collection $fields;
 
+    /** @var array|null Attribute names of child fields to display on the index view. */
+    private ?array $indexFieldAttributes = null;
+
     /** @var mixed The resource instance stored during resolve(), used to re-resolve after dependsOn sync. */
     private mixed $resolvedResource = null;
 
@@ -36,6 +39,35 @@ class JsonWrapper extends Field
         parent::__construct($attribute, $attribute);
 
         $this->fields = collect($fields);
+    }
+
+    /**
+     * Specify which child fields should be visible on the index view.
+     *
+     * @param string[] $attributes Attribute names of child fields to show on index.
+     */
+    public function indexFields(array $attributes): static
+    {
+        $this->indexFieldAttributes = $attributes;
+
+        return $this;
+    }
+
+    /**
+     * Get the child fields marked for display on the index view,
+     * resolved with the proper "parent->child" attribute path.
+     *
+     * @return Collection<int, Field>
+     */
+    public function getIndexFields(): Collection
+    {
+        if ($this->indexFieldAttributes === null) {
+            return collect();
+        }
+
+        return $this->fields
+            ->filter(fn (Field $field) => in_array($field->attribute, $this->indexFieldAttributes))
+            ->each(fn (Field $field) => $field->attribute = "{$this->attribute}->{$field->attribute}");
     }
 
     /**

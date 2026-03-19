@@ -54,8 +54,12 @@ trait HasJsonWrapper
             return $this->flattenFields(parent::availableFields($request));
         }
 
-        return parent::availableFields($request)->filter(function ($value) {
-            return !($value instanceof JsonWrapper);
+        return parent::availableFields($request)->flatMap(function ($field) {
+            if ($field instanceof JsonWrapper) {
+                return $field->getIndexFields();
+            }
+
+            return [$field];
         });
     }
 
