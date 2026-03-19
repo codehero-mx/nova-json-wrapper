@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.0](https://github.com/codehero-mx/nova-json-wrapper/compare/1.0.0...1.1.0) (2026-03-19)
+
+### Features
+
+* add indexFields() to display selected child fields on index view ([3392cab](https://github.com/codehero-mx/nova-json-wrapper/commit/3392cabbf02e557c5787f55da5e45fdabab0d15b))
+
 ## 1.0.0 (2026-03-19)
 
 ### Features
